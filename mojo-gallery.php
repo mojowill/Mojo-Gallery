@@ -223,6 +223,7 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 		 * 
 		 * @access public
 		 * @return void
+		 * @todo This might be a load of crap and messing up stuff?
 		 */
 		function output_gallery() {
 			global $post;
