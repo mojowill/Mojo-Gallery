@@ -36,7 +36,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * @since 0.1
  * @todo Have archive and single templates created and used
  * @todo Modify Taxonomy permalinks to include CPT
- * @todo Add Options page to set default image and colorbox options
+ * @todo Add Options page to set default image
  */
 
 if ( ! class_exists( 'mojoGallery' ) ) :
@@ -67,6 +67,7 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 
 			
 			add_filter( 'the_content', array( &$this, 'output_gallery' ) );
+			add_filter( 'the_content', array( &$this, 'social_sharing' ) );
 									
 			/**
 			 * Custom Template Filter
@@ -283,35 +284,38 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 		 * @access public
 		 * @return void
 		 */
-		function social_sharing() {
-				echo '
-					<div style="social-widget">
-						<div style="display:inline;">
-							<a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal">Tweet</a>
-							<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+		function social_sharing($content) {
+				$options = get_option('mojoGallery_options');
+				if ( is_single() && ( 'mojo-gallery-album' == get_post_type() ) && ($options['social'] == 1) ) : 
+					return $content . '
+						<div style="social-widget">
+							<div style="display:inline;">
+								<a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal">Tweet</a>
+								<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+							</div>
+							<div style="display:inline;">
+								<g:plusone size="medium"></g:plusone>
+								<script type="text/javascript">
+									(function() { 
+										var po = document.createElement(\'script\');
+										po.type = \'text/javascript\';
+										po.async = true;
+										po.src = \'<a href="https://apis.google.com/js/plusone.js&#039;" rel="nofollow">https://apis.google.com/js/plusone.js&#039;</a>\';
+										var s = document.getElementsByTagName(\'script\')[0];
+										s.parentNode.insertBefore(po, s);
+									})();
+								</script>
+							</div>
+							<div style="display:inline;">
+								<iframe src="http://www.facebook.com/plugins/like.php?href='. rawurlencode( get_permalink() ) .'>&amp;send=false&amp;layout=button_count&amp;width=120&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:120px; height:21px;" allowTransparency="true"></iframe>
+							</div>
 						</div>
-						<div style="display:inline;">
-							<g:plusone size="medium"></g:plusone>
-							<script type="text/javascript">
-								(function() { 
-									var po = document.createElement(\'script\');
-									po.type = \'text/javascript\';
-									po.async = true;
-									po.src = \'<a href="https://apis.google.com/js/plusone.js&#039;" rel="nofollow">https://apis.google.com/js/plusone.js&#039;</a>\';
-									var s = document.getElementsByTagName(\'script\')[0];
-									s.parentNode.insertBefore(po, s);
-								})();
-							</script>
-						</div>
-						<div style="display:inline;">
-							<iframe src="http://www.facebook.com/plugins/like.php?href=';
-						echo rawurlencode( get_permalink() );
-						echo '>&amp;send=false&amp;layout=button_count&amp;width=120&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:120px; height:21px;" allowTransparency="true"></iframe>
-						</div>
-					</div>
-					<br />
-					';
-
+						<br />
+						';
+				else :
+					return $content;
+				endif;
+					
 		}
 		
 		/**
