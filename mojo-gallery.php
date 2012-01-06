@@ -46,6 +46,7 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 	 */
 	class mojoGallery {
 								
+		
 		/**
 		 * __construct function.
 		 *
@@ -62,10 +63,30 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 			add_action( 'init', array( &$this, 'register_taxonomy_album_tag' ) );
 			add_action( 'init', array( &$this, 'register_taxonomy_album_category' ) );
 			
+			add_action( 'wp_print_scripts', array( &$this, 'gplus' ) );
+
+			
 			add_filter( 'the_content', array( &$this, 'output_gallery' ) );
+									
+			/**
+			 * Custom Template Filter
+			 * 
+			 * Commented out for now.
+			 */
+			//add_filter( 'single_template', array( &$this, 'custom_single_template' ) );
 			
-			include ( dirname( __FILE__ ) . '/includes/colorbox/colorbox.php' );
+			$options = get_option('mojoGallery_options');
 			
+			/**
+			 * Only bring in the colorbox if options say so
+			 */
+			if (isset($options['colorbox'])) :
+				
+				if ( $options['colorbox'] == 1 ) :
+					include ( dirname( __FILE__ ) . '/includes/colorbox/colorbox.php' );
+				
+				endif;
+			endif;
 		}
 		
 		/**
@@ -209,17 +230,21 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 		 * output_gallery function.
 		 *
 		 * Adds the Gallery Shortcode to the_content on album pages 
-		 * ONLY if they haven't already added the shortcode!
+		 * ONLY if they haven't already added the shortcode! 
 		 * 
 		 * @access public
 		 * @return void
-		 * @todo This might be a load of crap and messing up stuff?
+		 * @todo Allow gallery options from options page (number of columns etc.)
 		 */
 		function output_gallery($content) {
 			global $post;
 			
-			if ( 'mojo-gallery-album' == get_post_type() && is_singular()  ) :
+			if ( ( 'mojo-gallery-album' == get_post_type() ) && is_singular()  ) :
 			
+				
+				/**
+				 * Add the gallery shortcode if needed
+				 */
 				$gallery = strpos( $content, '[gallery' );
 				if ( $gallery === false ) :
 				
@@ -232,10 +257,83 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 					return $content;
 				
 				endif;
-			
+				
 			endif;
 		}
 		
+		/**
+		 * gplus function.
+		 *
+		 * Required JS for the Social Stuff on loads on our pages!
+		 * 
+		 * @access public
+		 * @return void
+		 */
+		function gplus() {
+			if ( is_single() && ( 'mojo-gallery-album' == get_post_type() ) ) :
+				wp_enqueue_script( 'gplus', 'https://apis.google.com/js/plusone.js', null, null, true );
+			endif;
+		}
+
+		/**
+		 * social_sharing function.
+		 *
+		 * Adds Social Media Sharing.
+		 * 
+		 * @access public
+		 * @return void
+		 */
+		function social_sharing() {
+				echo '
+					<div style="social-widget">
+						<div style="display:inline;">
+							<a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal">Tweet</a>
+							<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+						</div>
+						<div style="display:inline;">
+							<g:plusone size="medium"></g:plusone>
+							<script type="text/javascript">
+								(function() { 
+									var po = document.createElement(\'script\');
+									po.type = \'text/javascript\';
+									po.async = true;
+									po.src = \'<a href="https://apis.google.com/js/plusone.js&#039;" rel="nofollow">https://apis.google.com/js/plusone.js&#039;</a>\';
+									var s = document.getElementsByTagName(\'script\')[0];
+									s.parentNode.insertBefore(po, s);
+								})();
+							</script>
+						</div>
+						<div style="display:inline;">
+							<iframe src="http://www.facebook.com/plugins/like.php?href=';
+						echo rawurlencode( get_permalink() );
+						echo '>&amp;send=false&amp;layout=button_count&amp;width=120&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:120px; height:21px;" allowTransparency="true"></iframe>
+						</div>
+					</div>
+					<br />
+					';
+
+		}
+		
+		/**
+		 * custom_single_template function.
+		 *
+		 * Set our own single template for our albums.
+		 * 
+		 * @access public
+		 * @param mixed $single_template
+		 * @return void
+		 * @todo is this the best way? Should we just use filters?
+		 */
+		function custom_single_template($single_template) {
+			global $post;
+			
+			if ( $post->post_type == 'mojo-gallery-album' ) :
+				$single_template = dirname( __FILE__ ) . '/single-gallery.php';
+			endif;
+			
+			return $single_template;
+		}
+				
 	} //end class
 
 endif; //end class if
@@ -275,10 +373,11 @@ if ( ! class_exists( 'mojoGalleryOptions' ) ) :
 		    
 				delete_option('mojoGallery_options'); // so we don't have to reset all the 'off' checkboxes too! (don't think this is needed but leave for now)
 				
-				$arr = array(	"colorbox" => "1",
-								"chk_button3" => "1",
-								"chk_default_options_db" => "",
-								"drp_select_box" => "four",
+				$arr = array(	'colorbox' => '1',
+								'social' => '1',
+								'chk_button3' => '1',
+								'chk_default_options_db' => '',
+								'drp_select_box' => 'four',
 				);
 				
 				update_option('mojoGallery_options', $arr);
@@ -287,6 +386,13 @@ if ( ! class_exists( 'mojoGalleryOptions' ) ) :
 
 		}
 		
+		/**
+		 * delete_plugin_options function.
+		 * 
+		 * @access public
+		 * @static
+		 * @return void
+		 */
 		static function delete_plugin_options() {
 			delete_option( 'mojoGallery_options' );
 		}
@@ -345,7 +451,7 @@ if ( ! class_exists( 'mojoGalleryOptions' ) ) :
 								<label><input name="mojoGallery_options[colorbox]" type="checkbox" value="1" <?php if (isset($options['colorbox'])) { checked('1', $options['colorbox']); } ?> /> <?php echo _e( 'Use bundled Colorbox in Albums', 'mojo-gallery' );?></label><br />
 		
 								<!-- Second checkbox button -->
-								<label><input name="mojoGallery_options[chk_button2]" type="checkbox" value="1" <?php if (isset($options['chk_button2'])) { checked('1', $options['chk_button2']); } ?> /> <?php echo _e( 'Checkbox #2', 'uwpcrm' );?></label><br />
+								<label><input name="mojoGallery_options[social]" type="checkbox" value="1" <?php if (isset($options['social'])) { checked('1', $options['social']); } ?> /> <?php echo _e( 'Display Social Sharing', 'mojo-gallery' );?></label><br />
 		
 								<!-- Third checkbox button -->
 								<label><input name="mojoGallery_options[chk_button3]" type="checkbox" value="1" <?php if (isset($options['chk_button3'])) { checked('1', $options['chk_button3']); } ?> /> <?php echo _e( 'Checkbox #3', 'uwpcrm' );?></label><br />
@@ -363,15 +469,15 @@ if ( ! class_exists( 'mojoGalleryOptions' ) ) :
 						<tr>
 							<th scope="row">Sample Select Box</th>
 							<td>
-								<select name='mojoGallery_options[drp_select_box]'>
-									<option value='one' <?php selected('one', $options['drp_select_box']); ?>>One</option>
-									<option value='two' <?php selected('two', $options['drp_select_box']); ?>>Two</option>
-									<option value='three' <?php selected('three', $options['drp_select_box']); ?>>Three</option>
-									<option value='four' <?php selected('four', $options['drp_select_box']); ?>>Four</option>
-									<option value='five' <?php selected('five', $options['drp_select_box']); ?>>Five</option>
-									<option value='six' <?php selected('six', $options['drp_select_box']); ?>>Six</option>
-									<option value='seven' <?php selected('seven', $options['drp_select_box']); ?>>Seven</option>
-									<option value='eight' <?php selected('eight', $options['drp_select_box']); ?>>Eight</option>
+								<select name="mojoGallery_options[drp_select_box]">
+									<option value="one" <?php selected('one', $options['drp_select_box']); ?>>One</option>
+									<option value="two" <?php selected('two', $options['drp_select_box']); ?>>Two</option>
+									<option value="three" <?php selected('three', $options['drp_select_box']); ?>>Three</option>
+									<option value="four" <?php selected('four', $options['drp_select_box']); ?>>Four</option>
+									<option value="five" <?php selected('five', $options['drp_select_box']); ?>>Five</option>
+									<option value="six" <?php selected('six', $options['drp_select_box']); ?>>Six</option>
+									<option value="seven" <?php selected('seven', $options['drp_select_box']); ?>>Seven</option>
+									<option value="eight" <?php selected('eight', $options['drp_select_box']); ?>>Eight</option>
 								</select>
 								<span style="color:#666666;margin-left:2px;">Add a comment here to explain more about how to use the option above</span>
 							</td>
@@ -395,6 +501,13 @@ if ( ! class_exists( 'mojoGalleryOptions' ) ) :
 
 		}
 		
+		/**
+		 * validate_options function.
+		 * 
+		 * @access public
+		 * @param mixed $input
+		 * @return void
+		 */
 		function validate_options($input) {
 			return $input;
 		}
