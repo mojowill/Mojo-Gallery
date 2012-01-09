@@ -18,7 +18,7 @@
     The following rules are ordered and tabbed in a way that represents the
     order/nesting of the generated HTML, so that the structure easier to understand.
 */
-#cboxOverlay{background: #000 0 0 no-repeat;}
+#cboxOverlay{background:url(images/overlay.png) 0 0 repeat;}
 #colorbox{}
     #cboxTopLeft{width:21px; height:21px; background:url(images/controls.png) -100px 0 no-repeat;}
     #cboxTopRight{width:21px; height:21px; background:url(images/controls.png) -129px 0 no-repeat;}
@@ -41,8 +41,7 @@
         #cboxLoadingGraphic{background:url(images/loading.gif) center center no-repeat;}
         #cboxClose{position:absolute; bottom:0; right:0; background:url(images/controls.png) -25px 0px no-repeat; width:25px; height:25px; text-indent:-9999px;}
         #cboxClose.hover{background-position:-25px -25px;}
-img#cboxPhoto{max-width:none;
-    }
+
 /*
     The following fixes png-transparency for IE6.  
     It is also necessary for png-transparency in IE7 & IE8 to avoid 'black halos' with the fade transition
