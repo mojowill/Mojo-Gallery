@@ -359,7 +359,7 @@ if ( ! class_exists( 'mojoGalleryOptions' ) ) :
 		 */
 		function __construct() {
 			register_activation_hook( __FILE__, array( &$this, 'add_defaults' ) );
-			//register_uninstall_hook( __FILE__, array( &$this, 'delete_plugin_options' ) );
+			register_uninstall_hook( __FILE__, array( &$mojoGalleryOptions, 'delete_plugin_options' ) );
 			
 			add_action( 'admin_init', array( &$this, 'options_init' ) );
 			add_action( 'admin_menu', array( &$this, 'add_options_page' ) );
@@ -397,7 +397,7 @@ if ( ! class_exists( 'mojoGalleryOptions' ) ) :
 		 * @static
 		 * @return void
 		 */
-		static function delete_plugin_options() {
+		public static function delete_plugin_options() {
 			delete_option( 'mojoGallery_options' );
 		}
 		
