@@ -37,46 +37,15 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * @todo Have archive and single templates created and used
  * @todo Modify Taxonomy permalinks to include CPT
  * @todo Add Options page to set default image and colorbox options
- * @todo Add optional colorbox
  */
- 
+
 if ( ! class_exists( 'mojoGallery' ) ) :
 	
 	/**
 	 * mojoGallery class.
 	 */
 	class mojoGallery {
-		
-		
-		/**
-		 * _root
-		 * 
-		 * (default value: null)
-		 * 
-		 * @var mixed
-		 * @access protected
-		 * @static
-		 */
-		static protected $_root = null;
-		
-		/**
-		 * root function.
-		 *
-		 * Defines our root directory based on plugin 
-		 * 
-		 * @access public
-		 * @static
-		 * @return void
-		 */
-		static public function root() {
-			
-			if ( is_null( self::$_root ) ) :
-				self::$_root = dirname( __FILE__ );
-			endif;
-			
-			return self::$_root;
-		}
-				
+								
 		/**
 		 * __construct function.
 		 *
@@ -92,7 +61,9 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 			add_action( 'init', array( &$this, 'register_taxonomy_album_category' ) );
 			
 			add_filter( 'the_content', array( &$this, 'output_gallery' ) );
-
+			
+			include ( dirname( __FILE__ ) . '/includes/colorbox/colorbox.php' );
+			
 		}
 		
 		/**
