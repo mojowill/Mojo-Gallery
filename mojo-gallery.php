@@ -25,6 +25,21 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
+/**
+ * Mojo Gallery
+ *
+ * A small gallery plugin using the built in media uploader and gallery shortcodes. THIS IS A WORK IN PROGRESS!
+ *
+ * @package MojoGallery
+ * @author Will Wilson <will@mojowill.com>
+ * @version 0.1
+ * @since 0.1
+ * @todo Have archive and single templates created and used
+ * @todo Modify Taxonomy permalinks to include CPT
+ * @todo Add Options page to set default image and colorbox options
+ * @todo Add optional colorbox
+ */
+ 
 if ( ! class_exists( 'mojoGallery' ) ) :
 	
 	/**
@@ -46,6 +61,8 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 		
 		/**
 		 * root function.
+		 *
+		 * Defines our root directory based on plugin 
 		 * 
 		 * @access public
 		 * @static
@@ -108,7 +125,7 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 		        'hierarchical' => true,
 		        
 		        'supports' => array( 'title', 'editor', 'thumbnail', 'page-attributes' ),
-		        'taxonomies' => array( 'album-tag', 'album_category' ),
+		        'taxonomies' => array( 'album_tag', 'album_category' ),
 		        'public' => true,
 		        'show_ui' => true,
 		        'show_in_menu' => true,
@@ -225,14 +242,21 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 		 * @return void
 		 * @todo This might be a load of crap and messing up stuff?
 		 */
-		function output_gallery() {
+		function output_gallery($content) {
 			global $post;
 			
 			if ( 'mojo-gallery-album' == get_post_type() && is_singular()  ) :
 			
-				if ( true !== strpos( $post->post_content, '[gallery' ) ) :
+				$gallery = strpos( $content, '[gallery' );
+				if ( $gallery === false ) :
 				
-					echo do_shortcode('[gallery]');
+					$content .=  '[gallery]';
+					
+					return $content;
+					
+				else :
+					
+					return $content;
 				
 				endif;
 			
