@@ -252,7 +252,7 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 		 * @return void
 		 * @todo Allow gallery options from options page (number of columns etc.)
 		 */
-		function output_gallery($content) {
+		function output_gallery( $content ) {
 			global $post;
 			
 			if ( ( 'mojo-gallery-album' == get_post_type() ) && is_singular()  ) :
@@ -299,9 +299,9 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 		 * @access public
 		 * @return void
 		 */
-		function social_sharing($content) {
-				$options = get_option('mojoGallery_options');
-				if ( is_single() && ( 'mojo-gallery-album' == get_post_type() ) && ($options['social'] == 1) ) : 
+		function social_sharing( $content ) {
+				$options = get_option( 'mojoGallery_options' );
+				if ( is_single() && ( 'mojo-gallery-album' == get_post_type() ) && ( $options['social'] == 1 ) ) : 
 					return $content . '
 						<div style="social-widget">
 							<div style="display:inline;">
@@ -343,7 +343,7 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 		 * @return void
 		 * @todo is this the best way? Should we just use filters?
 		 */
-		function custom_single_template($single_template) {
+		function custom_single_template( $single_template ) {
 			global $post;
 			
 			if ( $post->post_type == 'mojo-gallery-album' ) :
@@ -363,7 +363,6 @@ if ( ! class_exists( 'mojoGalleryOptions' ) ) :
 	/**
 	 * mojoGalleryOptions class.
 	 *
-	 * @todo Add options for Colorbox
 	 * @todo Add options for Gallery output.
 	 */
 	class mojoGalleryOptions {
@@ -399,7 +398,7 @@ if ( ! class_exists( 'mojoGalleryOptions' ) ) :
 				$arr = array(	'colorbox' => '1',
 								'social' => '1',
 								'chk_default_options_db' => '',
-								'drp_select_box' => 'four',
+								'theme' => 'theme1',
 				);
 				
 				update_option('mojoGallery_options', $arr);
@@ -482,24 +481,21 @@ if ( ! class_exists( 'mojoGalleryOptions' ) ) :
 						<tr>
 							<th scope="row"><?php echo _e( 'Image Settings', 'mojo-gallery' );?></th>
 							<td>
-								<label><input name="mojoGallery[placeholder]" type="text" value="<?php if (isset($options['placeholder'])) echo $options['placeholder'];?>" /><?php echo _e( 'Default Image Placeholder URL', 'mojo-gallery' );?></label>
+								<label><input name="mojoGallery_options[placeholder]" type="text" value="<?php if (isset($options['placeholder'])) echo $options['placeholder'];?>" /><?php echo _e( 'Default Image Placeholder URL, (150px x 150px by default)', 'mojo-gallery' );?></label>
 							</td>
 						</tr>
 						<!-- Select Drop-Down Control -->
 						<tr>
-							<th scope="row">Sample Select Box</th>
+							<th scope="row"><?php echo _e( 'Colorbox Theme', 'mojo-gallery' );?></th>
 							<td>
-								<select name="mojoGallery_options[drp_select_box]">
-									<option value="one" <?php selected('one', $options['drp_select_box']); ?>>One</option>
-									<option value="two" <?php selected('two', $options['drp_select_box']); ?>>Two</option>
-									<option value="three" <?php selected('three', $options['drp_select_box']); ?>>Three</option>
-									<option value="four" <?php selected('four', $options['drp_select_box']); ?>>Four</option>
-									<option value="five" <?php selected('five', $options['drp_select_box']); ?>>Five</option>
-									<option value="six" <?php selected('six', $options['drp_select_box']); ?>>Six</option>
-									<option value="seven" <?php selected('seven', $options['drp_select_box']); ?>>Seven</option>
-									<option value="eight" <?php selected('eight', $options['drp_select_box']); ?>>Eight</option>
+								<select name="mojoGallery_options[theme]">
+									<option value="theme1" <?php selected('theme1', $options['theme']); ?>><?php echo _e( 'Theme One', 'mojo-gallery' );?></option>
+									<option value="theme2" <?php selected('theme2', $options['theme']); ?>><?php echo _e( 'Theme Two', 'mojo-gallery' );?></option>
+									<option value="theme3" <?php selected('theme3', $options['theme']); ?>><?php echo _e( 'Theme Three', 'mojo-gallery' );?></option>
+									<option value="theme4" <?php selected('theme4', $options['theme']); ?>><?php echo _e( 'Theme Four', 'mojo-gallery' );?></option>
+									<option value="theme5" <?php selected('theme5', $options['theme']); ?>><?php echo _e( 'Theme Five', 'mojo-gallery' );?></option>
 								</select>
-								<span style="color:#666666;margin-left:2px;">Add a comment here to explain more about how to use the option above</span>
+								<span style="color:#666666;margin-left:2px;"><?php echo _e( 'Select which theme you wish to use for the Colorbox', 'mojo-gallery' );?></span>
 							</td>
 						</tr>
 		
@@ -528,7 +524,8 @@ if ( ! class_exists( 'mojoGalleryOptions' ) ) :
 		 * @param mixed $input
 		 * @return void
 		 */
-		function validate_options($input) {
+		function validate_options( $input ) {
+			$input['placeholder'] = esc_url( $input['placeholder'] ); //Sanitise our placeholder URL
 			return $input;
 		}
 				

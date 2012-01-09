@@ -33,12 +33,24 @@ class mojoColorboxForGalleries {
 		add_action( 'wp_head', array( &$this, 'wp_head' ) );
 		add_filter( 'attachment_link', array( &$this, 'attachment_link' ), 10, 2 );
 
-		if ( !is_admin() ) 
-			wp_enqueue_script( 'colorbox', plugins_url( '', __FILE__ ) . '/js/jquery.colorbox-min.js', array( 'jquery' ), null, true );
-
-			wp_register_style( 'colorbox', plugins_url( '', __FILE__ ) . '/css/colorbox.css', false, null, 'screen' );
+		if ( !is_admin() ) :
+			wp_enqueue_script( 'colorbox', plugins_url( '', __FILE__ ) . '/colorbox/jquery.colorbox-min.js', array( 'jquery' ), null, true );
 			
-			wp_enqueue_style( 'colorbox' );
+			wp_register_style( 'colorbox-theme1', plugins_url( '', __FILE__ ) . '/colorbox/theme1/colorbox.css', array(), '1.3.14', 'screen' );
+			wp_register_style( 'colorbox-theme2', plugins_url( '', __FILE__ ) . '/colorbox/theme2/colorbox.css', array(), '1.3.14', 'screen' );
+			wp_register_style( 'colorbox-theme3', plugins_url( '', __FILE__ ) . '/colorbox/theme3/colorbox.css', array(), '1.3.14', 'screen' );
+			wp_register_style( 'colorbox-theme4', plugins_url( '', __FILE__ ) . '/colorbox/theme4/colorbox.css', array(), '1.3.14', 'screen' );
+			wp_register_style( 'colorbox-theme5', plugins_url( '', __FILE__ ) . '/colorbox/theme5/colorbox.css', array(), '1.3.14', 'screen' );
+
+		
+			
+			$options = get_option( 'mojoGallery_options' ); 
+			
+			wp_enqueue_style( 'colorbox-' . $options['theme'] );
+		
+		endif;
+
+		
 		}
 
 
