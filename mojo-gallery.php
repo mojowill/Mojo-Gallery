@@ -3,7 +3,7 @@
 Plugin Name: The Mojo Gallery
 Plugin URI: http://www.mojowill.com/developer/mojo-gallery-plugin/
 Description: A small gallery plugin using the built in media uploader and gallery shortcodes. THIS IS A WORK IN PROGRESS!
-Version: 0.1
+Version: 0.2
 Author: theMojoWill
 Author URI: http://www.mojowill.com
 License: GPLv2 or later
@@ -64,6 +64,7 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 			add_action( 'init', array( &$this, 'gallery_style' ) );
 			
 			add_action( 'wp_print_scripts', array( &$this, 'gplus' ) );
+			add_action( 'init', array( &$this, 'load_languages' ) );
 
 			
 			add_filter( 'the_content', array( &$this, 'output_gallery' ) );
@@ -97,6 +98,7 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 		 * 
 		 * @access public
 		 * @return void
+		 * @since 0.1
 		 */
 		function gallery_style() {
 			 
@@ -107,12 +109,24 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 		}
 		
 		/**
+		 * load_languages function.
+		 * 
+		 * @access public
+		 * @return void
+		 * @since 0.2
+		 */
+		function load_languages() {
+			load_plugin_textdomain( 'mojo-gallery', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+		}
+		
+		/**
 		 * register_mojo_cpt_albums function.
 		 *
 		 * Setup our Albums post type
 		 * 
 		 * @access public
 		 * @return void
+		 * @since 0.1
 		 */
 		function register_cpt_mojo_album() {
 
@@ -128,7 +142,7 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 		        'not_found' => __( 'No albums found', 'mojo-gallery' ),
 		        'not_found_in_trash' => __( 'No albums found in Trash', 'mojo-gallery' ),
 		        'parent_item_colon' => __( 'Parent Album:', 'mojo-gallery' ),
-		        'menu_name' => __( 'Mojo Gallery', 'mojo-gallery' ),
+		        'menu_name' => 'Mojo Gallery', //we 're not translating this
 		    );
 		
 		    $args = array( 
@@ -162,6 +176,7 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 		 * 
 		 * @access public
 		 * @return void
+		 * @since 0.1
 		 */
 		function register_taxonomy_album_tag() {
 
@@ -206,6 +221,7 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 		 * 
 		 * @access public
 		 * @return void
+		 * @since 0.1
 		 */
 		function register_taxonomy_album_category() {
 
@@ -251,6 +267,7 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 		 * 
 		 * @access public
 		 * @return void
+		 * @since 0.1
 		 * @todo Allow gallery options from options page (number of columns etc.)
 		 */
 		function output_gallery( $content ) {
@@ -285,6 +302,7 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 		 * 
 		 * @access public
 		 * @return void
+		 * @since 0.1
 		 */
 		function gplus() {
 			if ( is_single() && ( 'mojo-gallery-album' == get_post_type() ) ) :
@@ -299,6 +317,7 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 		 * 
 		 * @access public
 		 * @return void
+		 * @since 0.1
 		 */
 		function social_sharing( $content ) {
 				$options = get_option( 'mojoGallery_options' );
@@ -342,6 +361,7 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 		 * @access public
 		 * @param mixed $single_template
 		 * @return void
+		 * @since 0.1
 		 * @todo is this the best way? Should we just use filters?
 		 */
 		function custom_single_template( $single_template ) {
@@ -361,6 +381,7 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 		 * 
 		 * @access public
 		 * @return void
+		 * @since 0.1
 		 */
 		function single_output($post) {
 			global $post;
@@ -470,6 +491,7 @@ if ( ! class_exists( 'mojoGalleryOptions' ) ) :
 		 * 
 		 * @access public
 		 * @return void
+		 * @since 0.1
 		 */
 		function __construct() {
 			register_activation_hook( __FILE__, array( &$this, 'add_defaults' ) );
@@ -484,6 +506,7 @@ if ( ! class_exists( 'mojoGalleryOptions' ) ) :
 		 * 
 		 * @access public
 		 * @return void
+		 * @since 0.1
 		 */
 		function add_defaults() {
 			$tmp = get_option('mojoGallery_options');
@@ -509,6 +532,7 @@ if ( ! class_exists( 'mojoGalleryOptions' ) ) :
 		 * @access public
 		 * @static
 		 * @return void
+		 * @since 0.1
 		 */
 		public static function delete_plugin_options() {
 			delete_option( 'mojoGallery_options' );
@@ -519,6 +543,7 @@ if ( ! class_exists( 'mojoGalleryOptions' ) ) :
 		 * 
 		 * @access public
 		 * @return void
+		 * @since 0.1
 		 */
 		function options_init() {
 			register_setting( 'mojoGallery_plugin_options', 'mojoGallery_options', array( &$this, 'validate_options' ) );		
@@ -529,6 +554,7 @@ if ( ! class_exists( 'mojoGalleryOptions' ) ) :
 		 * 
 		 * @access public
 		 * @return void
+		 * @since 0.1
 		 */
 		function add_options_page() {
 			add_submenu_page( 'edit.php?post_type=mojo-gallery-album', __('Mojo Gallery Options', 'mojo-gallery' ), __('Options', 'mojo-gallery'), 'manage_options', 'mojoGallery-options', array( $this, 'render_form' )  );
@@ -539,6 +565,7 @@ if ( ! class_exists( 'mojoGalleryOptions' ) ) :
 		 * 
 		 * @access public
 		 * @return void
+		 * @since 0.1
 		 * @todo TIDY UP!
 		 */
 		function render_form() {
@@ -619,6 +646,7 @@ if ( ! class_exists( 'mojoGalleryOptions' ) ) :
 		 * @access public
 		 * @param mixed $input
 		 * @return void
+		 * @since 0.1
 		 */
 		function validate_options( $input ) {
 			$input['placeholder'] = esc_url( $input['placeholder'] ); //Sanitise our placeholder URL
