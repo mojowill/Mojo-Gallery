@@ -12,7 +12,6 @@
  * 
  * @package MojoGallery
  * @author Will Wilson <will@mojowill.com>
- * @license http://www.opensource.org/licenses/mit-license.php MIT
  * @version 1.0
  * @since 0.1
  * @todo clean up paths

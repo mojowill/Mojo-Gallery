@@ -40,7 +40,7 @@
 
 								$permalink = get_permalink( $album->ID );
 								
-								if ( $thumb = get_the_post_thumbnail( $album->ID, 'gallery-thumbnail') == null :
+								if ( $thumb = get_the_post_thumbnail( $album->ID, 'gallery-thumbnail') == null ) :
 									$thumb = '<img src="'. get_template_directory_uri() .'/images/default_thumb.jpg" />';
 								else :
 									$thumb = get_the_post_thumbnail( $album->ID, 'gallery-thumbnail');
