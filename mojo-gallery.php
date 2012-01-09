@@ -138,21 +138,21 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 		function register_taxonomy_album_tag() {
 
 		    $labels = array( 
-		        'name' => __( 'Album Tags', 'album tag' ),
-		        'singular_name' => __( 'Album Tag', 'album tag' ),
-		        'search_items' => __( 'Search Album Tags', 'album tag' ),
-		        'popular_items' => __( 'Popular Album Tags', 'album tag' ),
-		        'all_items' => __( 'All Album Tags', 'album tag' ),
-		        'parent_item' => __( 'Parent Album Tag', 'album tag' ),
-		        'parent_item_colon' => __( 'Parent Album Tag:', 'album tag' ),
-		        'edit_item' => __( 'Edit Album Tag', 'album tag' ),
-		        'update_item' => __( 'Update Album Tag', 'album tag' ),
-		        'add_new_item' => __( 'Add New Album Tag', 'album tag' ),
-		        'new_item_name' => __( 'New Album Tag Name', 'album tag' ),
-		        'separate_items_with_commas' => __( 'Separate album tags with commas', 'album tag' ),
-		        'add_or_remove_items' => __( 'Add or remove album tags', 'album tag' ),
-		        'choose_from_most_used' => __( 'Choose from the most used album tags', 'album tag' ),
-		        'menu_name' => __( 'Album Tags', 'album tag' ),
+		        'name' => __( 'Album Tags', 'mojo-gallery' ),
+		        'singular_name' => __( 'Album Tag', 'mojo-gallery' ),
+		        'search_items' => __( 'Search Album Tags', 'mojo-gallery' ),
+		        'popular_items' => __( 'Popular Album Tags', 'mojo-gallery' ),
+		        'all_items' => __( 'All Album Tags', 'mojo-gallery' ),
+		        'parent_item' => __( 'Parent Album Tag', 'mojo-gallery' ),
+		        'parent_item_colon' => __( 'Parent Album Tag:', 'mojo-gallery' ),
+		        'edit_item' => __( 'Edit Album Tag', 'mojo-gallery' ),
+		        'update_item' => __( 'Update Album Tag', 'mojo-gallery' ),
+		        'add_new_item' => __( 'Add New Album Tag', 'mojo-gallery' ),
+		        'new_item_name' => __( 'New Album Tag Name', 'mojo-gallery' ),
+		        'separate_items_with_commas' => __( 'Separate album tags with commas', 'mojo-gallery' ),
+		        'add_or_remove_items' => __( 'Add or remove album tags', 'mojo-gallery' ),
+		        'choose_from_most_used' => __( 'Choose from the most used album tags', 'mojo-gallery' ),
+		        'menu_name' => __( 'Album Tags', 'mojo-gallery' ),
 		    );
 		
 		    $args = array( 
@@ -182,21 +182,21 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 		function register_taxonomy_album_category() {
 
 		    $labels = array( 
-		        'name' => __( 'Album Categories', 'album category' ),
-		        'singular_name' => __( 'Album Category', 'album category' ),
-		        'search_items' => __( 'Search Album Categories', 'album category' ),
-		        'popular_items' => __( 'Popular Album Categories', 'album category' ),
-		        'all_items' => __( 'All Album Categories', 'album category' ),
-		        'parent_item' => __( 'Parent Album Category', 'album category' ),
-		        'parent_item_colon' => __( 'Parent Album Category:', 'album category' ),
-		        'edit_item' => __( 'Edit Album Category', 'album category' ),
-		        'update_item' => __( 'Update Album Category', 'album category' ),
-		        'add_new_item' => __( 'Add New Album Category', 'album category' ),
-		        'new_item_name' => __( 'New Album Category Name', 'album category' ),
-		        'separate_items_with_commas' => __( 'Separate album categories with commas', 'album category' ),
-		        'add_or_remove_items' => __( 'Add or remove album categories', 'album category' ),
-		        'choose_from_most_used' => __( 'Choose from the most used album categories', 'album category' ),
-		        'menu_name' => __( 'Album Categories', 'album category' ),
+		        'name' => __( 'Album Categories', 'mojo-gallery' ),
+		        'singular_name' => __( 'Album Category', 'mojo-gallery' ),
+		        'search_items' => __( 'Search Album Categories', 'mojo-gallery' ),
+		        'popular_items' => __( 'Popular Album Categories', 'mojo-gallery' ),
+		        'all_items' => __( 'All Album Categories', 'mojo-gallery' ),
+		        'parent_item' => __( 'Parent Album Category', 'mojo-gallery' ),
+		        'parent_item_colon' => __( 'Parent Album Category:', 'mojo-gallery' ),
+		        'edit_item' => __( 'Edit Album Category', 'mojo-gallery' ),
+		        'update_item' => __( 'Update Album Category', 'mojo-gallery' ),
+		        'add_new_item' => __( 'Add New Album Category', 'mojo-gallery' ),
+		        'new_item_name' => __( 'New Album Category Name', 'mojo-gallery' ),
+		        'separate_items_with_commas' => __( 'Separate album categories with commas', 'mojo-gallery' ),
+		        'add_or_remove_items' => __( 'Add or remove album categories', 'mojo-gallery' ),
+		        'choose_from_most_used' => __( 'Choose from the most used album categories', 'mojo-gallery' ),
+		        'menu_name' => __( 'Album Categories', 'mojo-gallery' ),
 		    );
 		
 		    $args = array( 
