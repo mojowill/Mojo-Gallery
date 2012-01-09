@@ -12,6 +12,7 @@
  * 
  * @package MojoGallery
  * @author Will Wilson <will@mojowill.com>
+ * @license http://www.opensource.org/licenses/mit-license.php MIT
  * @version 1.0
  * @since 0.1
  * @todo clean up paths
@@ -26,7 +27,7 @@ class mojoColorboxForGalleries {
 	 * 
 	 * @access public
 	 * @return void
-	 * @package Vtesse
+	 * @package MojoGallery
 	 */
 	function mojoColorboxForGalleries() {
 		
@@ -43,10 +44,19 @@ class mojoColorboxForGalleries {
 			wp_register_style( 'colorbox-theme5', plugins_url( '', __FILE__ ) . '/colorbox/theme5/colorbox.css', array(), '1.3.14', 'screen' );
 
 		
-			
+			/**
+			 * Just make sure the default or user option actually exists to avoid errors
+			 */
+
 			$options = get_option( 'mojoGallery_options' ); 
+						 
+			if ( isset( $options['theme'] ) ) :
+				wp_enqueue_style( 'colorbox-' . $options['theme'] );
 			
-			wp_enqueue_style( 'colorbox-' . $options['theme'] );
+			else:
+				wp_enqueue_style( 'colorbox-theme1' );
+			
+			endif;
 		
 		endif;
 
