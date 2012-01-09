@@ -36,7 +36,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  * @since 0.1
  * @todo Have archive and single templates created and used
  * @todo Modify Taxonomy permalinks to include CPT
- * @todo Add Options page to set default image
  */
 
 if ( ! class_exists( 'mojoGallery' ) ) :
@@ -62,6 +61,7 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 			add_action( 'init', array( &$this, 'register_cpt_mojo_album' ) );
 			add_action( 'init', array( &$this, 'register_taxonomy_album_tag' ) );
 			add_action( 'init', array( &$this, 'register_taxonomy_album_category' ) );
+			add_action( 'init', array( &$this, 'gallery_style' ) );
 			
 			add_action( 'wp_print_scripts', array( &$this, 'gplus' ) );
 
@@ -88,6 +88,21 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 				
 				endif;
 			endif;
+			
+		}
+		
+		/**
+		 * gallery_style function.
+		 * 
+		 * @access public
+		 * @return void
+		 */
+		function gallery_style() {
+			 
+			 if ( ! is_admin() ) :
+			 	wp_enqueue_style( 'mojo-gallery', plugins_url( '', __FILE__ ) . '/gallery.css', null, '1.0', 'screen' );
+			 endif;
+
 		}
 		
 		/**
@@ -337,6 +352,7 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 			
 			return $single_template;
 		}
+		
 				
 	} //end class
 
@@ -346,6 +362,9 @@ if ( ! class_exists( 'mojoGalleryOptions' ) ) :
 
 	/**
 	 * mojoGalleryOptions class.
+	 *
+	 * @todo Add options for Colorbox
+	 * @todo Add options for Gallery output.
 	 */
 	class mojoGalleryOptions {
 		
@@ -379,7 +398,6 @@ if ( ! class_exists( 'mojoGalleryOptions' ) ) :
 				
 				$arr = array(	'colorbox' => '1',
 								'social' => '1',
-								'chk_button3' => '1',
 								'chk_default_options_db' => '',
 								'drp_select_box' => 'four',
 				);
@@ -426,6 +444,7 @@ if ( ! class_exists( 'mojoGalleryOptions' ) ) :
 		 * 
 		 * @access public
 		 * @return void
+		 * @todo TIDY UP!
 		 */
 		function render_form() {
 		
@@ -433,7 +452,7 @@ if ( ! class_exists( 'mojoGalleryOptions' ) ) :
 			<div class="wrap">
 				
 				<!-- Display Plugin Icon, Header, and Description -->
-				<div class="icon32" id="icon-upload"><br></div>
+				<div class="icon32" id="icon-upload"><br /></div>
 				<h2><?php echo _e( 'Mojo Gallery Options', 'mojo-gallery' );?></h2>
 		
 				<!-- Beginning of the Plugin Options Form -->
@@ -445,7 +464,6 @@ if ( ! class_exists( 'mojoGalleryOptions' ) ) :
 					<!-- Each Plugin Option Defined on a New Table Row -->
 					<table class="form-table">
 		
-						<!-- Text Area Control -->
 		
 						<!-- Checkbox Buttons -->
 						<tr valign="top">
@@ -457,18 +475,16 @@ if ( ! class_exists( 'mojoGalleryOptions' ) ) :
 								<!-- Second checkbox button -->
 								<label><input name="mojoGallery_options[social]" type="checkbox" value="1" <?php if (isset($options['social'])) { checked('1', $options['social']); } ?> /> <?php echo _e( 'Display Social Sharing', 'mojo-gallery' );?></label><br />
 		
-								<!-- Third checkbox button -->
-								<label><input name="mojoGallery_options[chk_button3]" type="checkbox" value="1" <?php if (isset($options['chk_button3'])) { checked('1', $options['chk_button3']); } ?> /> <?php echo _e( 'Checkbox #3', 'uwpcrm' );?></label><br />
-		
-								<!-- Fourth checkbox button -->
-								<label><input name="mojoGallery_options[chk_button4]" type="checkbox" value="1" <?php if (isset($options['chk_button4'])) { checked('1', $options['chk_button4']); } ?> /> <?php echo _e( 'Checkbox #4', 'uwpcrm' );?> </label><br />
-		
-								<!-- Fifth checkbox button -->
-								<label><input name="mojoGallery_options[chk_button5]" type="checkbox" value="1" <?php if (isset($options['chk_button5'])) { checked('1', $options['chk_button5']); } ?> /> <?php echo _e( 'Checkbox #5', 'uwpcrm' );?> </label>
 							</td>
 						</tr>
-		
-		
+
+						<!-- Text Area Control -->
+						<tr>
+							<th scope="row"><?php echo _e( 'Image Settings', 'mojo-gallery' );?></th>
+							<td>
+								<label><input name="mojoGallery[placeholder]" type="text" value="<?php if (isset($options['placeholder'])) echo $options['placeholder'];?>" /><?php echo _e( 'Default Image Placeholder URL', 'mojo-gallery' );?></label>
+							</td>
+						</tr>
 						<!-- Select Drop-Down Control -->
 						<tr>
 							<th scope="row">Sample Select Box</th>
@@ -491,7 +507,7 @@ if ( ! class_exists( 'mojoGalleryOptions' ) ) :
 						<tr valign="top" style="border-top:#dddddd 1px solid;">
 							<th scope="row"><?php echo _e( 'Database Options', 'mojo-gallery');?></th>
 							<td>
-								<label><input name="uwpcrm_options[chk_default_options_db]" type="checkbox" value="1" <?php if (isset($options['chk_default_options_db'])) { checked('1', $options['chk_default_options_db']); } ?> /> <?php echo _e( 'Restore defaults upon plugin deactivation/reactivation', 'mojo-gallery');?></label>
+								<label><input name="mojoGallery_options[chk_default_options_db]" type="checkbox" value="1" <?php if (isset($options['chk_default_options_db'])) { checked('1', $options['chk_default_options_db']); } ?> /> <?php echo _e( 'Restore defaults upon plugin deactivation/reactivation', 'mojo-gallery');?></label>
 								<br /><span style="color:red;margin-left:2px;"><?php echo _e( 'Only check this if you want to reset plugin settings upon Plugin reactivation', 'mojo-gallery');?></span>
 							</td>
 						</tr>
