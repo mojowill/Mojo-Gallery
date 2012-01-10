@@ -46,6 +46,9 @@ Check out the Developer Notes section for more info.
 
 == Changelog ==
 
+= 0.3 =
+* Added Readme
+
 = 0.2 =
 * Adding multi language support
 
