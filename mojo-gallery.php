@@ -441,20 +441,18 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 
   			//Set Thumb from current post thumbnail
 			if ( has_post_thumbnail() ) :
-				$this->thumb = get_the_post_thumbnail(get_the_ID(), 'gallery-thumbnail');
-				return $this->thumb;
+				$thumb = get_the_post_thumbnail(get_the_ID(), 'gallery-thumbnail');
+
 			//If no post thumbnail get our user set default
 			elseif ( ( isset( $options['placeholder'] ) &&  ( $options['placeholder'] !== '' ) ) ) :
-				$this->thumb = $options['placeholder'];
-				return $this->thumb;
+				$thumb = $options['placeholder'];
 			
 			//If no user set default use the plugin default	
 			else :
-				$this->thumb = '<img src="'. plugins_url( '', __FILE__ ) . '/images/default.jpg" />';
-				return $this->thumb;
+				$thumb = '<img src="'. plugins_url( '', __FILE__ ) . '/images/default.jpg" />';
 			endif;
 			
-			return $this->thumb;
+			return $thumb;
 		}
 		
 	} //end class
