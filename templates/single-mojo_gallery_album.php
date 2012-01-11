@@ -9,14 +9,16 @@
             			//Lets get some info about our parent post
             			$parent_title = get_the_title($post->post_parent);
             			
+            			//Get options
+            			$options = get_option( 'mojoGallery_options' ); 
             			//If we have a parent post modify the link/title to include it
             			if ($post->post_parent ) : ?>
             			
-            				<h1><a href="<?php echo home_url();?>/gallery">Gallery</a> &raquo; <a href="<?php echo get_permalink($post->post_parent);?>"><?php echo $parent_title;?></a> &raquo; <?php the_title();?></h1>			
+            				<h1><a href="<?php echo get_post_type_archive_link( 'mojo-gallery-album' );?>"><?php echo _e( 'Gallery', 'mojo-gallery' );?></a> &raquo; <a href="<?php echo get_permalink($post->post_parent);?>"><?php echo $parent_title;?></a> &raquo; <?php the_title();?></h1>			
 						
 						<?php else : ?>
 					
-							<h1><a href="<?php echo home_url();?>/gallery">Gallery</a> &raquo; <?php the_title();?></h1>						
+							<h1><a href="<?php echo get_post_type_archive_link( 'mojo-gallery-album');?>"><?php echo _e( 'Gallery', 'mojo-gallery');?></a> &raquo; <?php the_title();?></h1>						
 						<?php endif;
 					
 						//If we have no content and we have children list them
@@ -31,7 +33,7 @@
 							$albums = get_pages($args);
 							
 							$counter = 1; //start our counter
-							$grids = 4; //images per row should be the same as archive-gallery.php
+							$grids = $options['columns']; //images per row should be the same as archive-gallery.php
 							?>
 							
 							<div id="gridcontainer">
@@ -40,12 +42,7 @@
 
 								$permalink = get_permalink( $album->ID );
 								
-								if ( $thumb = get_the_post_thumbnail( $album->ID, 'gallery-thumbnail') == null ) :
-									$thumb = '<img src="'. get_template_directory_uri() .'/images/default_thumb.jpg" />';
-								else :
-									$thumb = get_the_post_thumbnail( $album->ID, 'gallery-thumbnail');
-								endif;
-								
+								mojoGallery::default_thumbnails();								
 								
 								//show left hand column
 								if ( $counter != $grids ) : ?>
