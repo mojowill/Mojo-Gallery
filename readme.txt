@@ -57,4 +57,4 @@ Check out the Developer Notes section for more info.
 
 == Developer Notes ==
 
-If you would like to follow the development of the plugin or get involved please either drop by my [website](http://www.mojowill.com "Mojo Will") or the project [GitHub page](hub.com/mojowill/Mojo-Gallery "GitHub").
+If you would like to follow the development of the plugin or get involved please either drop by my [website](http://www.mojowill.com "Mojo Will") or the project [GitHub page](http://github.com/mojowill/Mojo-Gallery "GitHub").
