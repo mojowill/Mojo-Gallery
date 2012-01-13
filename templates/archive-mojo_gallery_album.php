@@ -2,6 +2,7 @@
 			
 			<div id="content3">
 				<?php 
+				
 				//Get Options
 				$options = get_option( 'mojoGallery_options' );
 				
@@ -15,7 +16,9 @@
 				if (have_posts()) : ?>
 				
 				<div class="fullcol">
+				
 				<h1><?php echo _e( 'Gallery', 'mojo-gallery' );?></h1>
+				
 				<div id="gridcontainer">
 
             		<?php while (have_posts() ) : the_post();

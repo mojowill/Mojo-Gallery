@@ -14,6 +14,8 @@ The Mojo Gallery is a very simple Wordpress gallery plugin that aims to help peo
 
 This is very much a DEVELOPMENT release and should only be used for testing or as a starting point for your own project.
 
+Also I'm sorry I'm new to SVN I normally use git so excuse me if there are loads of stupid commits!
+
 == Installation ==
 
 Installation is simple, just like every other Wordpress plugin. 
@@ -45,6 +47,9 @@ Check out the Developer Notes section for more info.
 1. A simple to use options page.
 
 == Changelog ==
+
+= 0.4 =
+* Added front end templates and template checks
 
 = 0.3 =
 * Added Readme

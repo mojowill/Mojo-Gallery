@@ -21,8 +21,8 @@
 							<h1><a href="<?php echo get_post_type_archive_link( 'mojo-gallery-album');?>"><?php echo _e( 'Gallery', 'mojo-gallery');?></a> &raquo; <?php the_title();?></h1>						
 						<?php endif;
 					
-						//If we have no content and we have children list them
-						if ( get_the_content() == '' ) :
+						//If we have no content and we have children list them, we need to check here for out own injection of the shortcode!
+						if ( ( get_the_content() == '' ) && ( ! $mojoGallery->has_attachements() ) ) :
 							
 							$args = array(
 								'post_type' => 'gallery',

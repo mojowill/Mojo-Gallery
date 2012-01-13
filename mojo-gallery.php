@@ -32,9 +32,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * @package MojoGallery
  * @author Will Wilson <will@mojowill.com>
- * @version 0.1
+ * @version 0.4
  * @since 0.1
- * @todo Have archive and single templates created and used
  * @todo Modify Taxonomy permalinks to include CPT
  */
 
@@ -52,6 +51,7 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 		 * 
 		 * @access public
 		 * @return void
+		 * @since 0.1
 		 */
 		function __construct() {
 			
@@ -280,18 +280,60 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 				/**
 				 * Add the gallery shortcode if needed
 				 */
-				$gallery = strpos( $content, '[gallery' );
-				if ( ($gallery === false ) && ( 'mojo-gallery-album' == get_post_type() ) && is_singular() ) :
+				$gallery = strpos( $content, '[gallery' ); //check the content for the gallery shortcode
+				
+				if ( ($gallery === false ) && ( 'mojo-gallery-album' == get_post_type() ) && is_singular() && $this->has_attachments() ) :
 				
 					$content .=  '[gallery]';
-					
 					return $content;
 					
 				else :
-					
 					return $content;
 				
 				endif;
+			
+		}
+		
+		/**
+		 * image_check function.
+		 *
+		 * A small function to check to see if a post has image attachments.
+		 * We will use this in some of our other checks later on.
+		 * 
+		 * @access public
+		 * @return void
+		 * @since 0.4
+		 */
+		function has_attachments() {
+			global $post;
+			
+			$args = array(
+				'post_type' => 'attachment',
+				'numberposts' => null,
+				'post_status' => null,
+				'post_parent' => $post->ID
+				);
+			
+			$attachments = get_posts( $args );
+			$is_images = false;
+			
+			/**
+			 * check to see if attachments are images.
+			 */
+			
+			foreach ( $attachments as $item ) :
+				$mime_types = explode( '/', get_post_mime_type( $item->ID ) );
+				if ( in_array( 'image', $mime_types ) ) :
+					$is_images = true;
+					break;
+				endif;
+			endforeach;
+			
+			if ( $is_images ) :
+				return true;
+			else :
+				return false;
+			endif;
 			
 		}
 		
@@ -465,6 +507,8 @@ if ( ! class_exists( 'mojoGalleryOptions' ) ) :
 	 * mojoGalleryOptions class.
 	 *
 	 * @todo Add options for Gallery output.
+	 * @version 0.4
+	 * @since 0.1
 	 */
 	class mojoGalleryOptions {
 		
@@ -641,6 +685,7 @@ if ( ! class_exists( 'mojoGalleryOptions' ) ) :
 		 */
 		function validate_options( $input ) {
 			$input['placeholder'] = esc_url( $input['placeholder'] ); //Sanitise our placeholder URL
+			$input['columns'] = wp_filter_nohtml_kses( $input['columns']); //sanitise columns
 			return $input;
 		}
 				
