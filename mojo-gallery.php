@@ -451,31 +451,32 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 		function load_archive( $archive_template ) {
 			$parent_theme = get_template_directory() . '/mojo-gallery/';
 			$child_theme = get_stylesheet_directory() . '/mojo-gallery/';
-			
-			/**
-			 * First we check the stylesheet path to check for child themes
-			 */
-			if ( is_dir( $child_theme) && file_exists( $child_theme . '/archive-mojo_gallery_album.php' ) ) :
-			
-				$archive_template = $child_theme . '/archive-mojo_gallery_album.php';
-			/**
-			 * If the stylesheet path isn't valid we check the template path
-			 * this is to check if the parent theme has a template even if the child theme doesn't
-			 */
-			elseif ( is_dir( $parent_theme ) && file_exists( $parent_theme . '/archive-mojo_gallery_album.php' ) ) :
-			
-				$archive_template = $parent_theme . '/archive-mojo_gallery_album.php';
-			
-			/**
-			 * If we are sure the user doesn't have their own templates we load the plugin default
-			 */
-			else :
-				global $post;
+
+			if ( is_post_type_archive() ) :
+				die('it works');
+				/**
+				 * First we check the stylesheet path to check for child themes
+				 */
+				if ( is_dir( $child_theme) && file_exists( $child_theme . '/archive-mojo_gallery_album.php' ) ) :
 				
-				if ( $post->post_type == 'mojo-gallery-album' ) :
+					$archive_template = $child_theme . '/archive-mojo_gallery_album.php';
+				/**
+				 * If the stylesheet path isn't valid we check the template path
+				 * this is to check if the parent theme has a template even if the child theme doesn't
+				 */
+				elseif ( is_dir( $parent_theme ) && file_exists( $parent_theme . '/archive-mojo_gallery_album.php' ) ) :
+				
+					$archive_template = $parent_theme . '/archive-mojo_gallery_album.php';
+				
+				/**
+				 * If we are sure the user doesn't have their own templates we load the plugin default
+				 */
+				else :
+				
 					$archive_template = dirname( __FILE__ ) . '/templates/archive-mojo_gallery_album.php';
+												
 				endif;
-											
+			
 			endif;
 			
 			return $archive_template;
