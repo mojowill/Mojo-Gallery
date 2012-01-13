@@ -49,7 +49,7 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 		/**
 		 * __construct function.
 		 *
-		 * We run our actions in here.
+		 * We run our actions and filters in here.
 		 * 
 		 * @access public
 		 * @return void
@@ -65,31 +65,36 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 			
 			add_action( 'wp_print_scripts', array( &$this, 'gplus' ) );
 			add_action( 'init', array( &$this, 'load_languages' ) );
+			
+			add_filter( 'single_template', array( &$this, 'load_templates' ) );
 
 			
 			add_filter( 'the_content', array( &$this, 'output_gallery' ) );
-			add_filter( 'the_content', array( &$this, 'social_sharing' ) );
-			
-									
+						
 			/**
-			 * Custom Template Filter
-			 * 
-			 * Commented out for now.
-			 */
-			//add_filter( 'single_template', array( &$this, 'custom_single_template' ) );
-			
+			 * Get Options
+			 */						
 			$options = get_option('mojoGallery_options');
 			
 			/**
 			 * Only bring in the colorbox if options say so
 			 */
-			if (isset($options['colorbox'])) :
+			if ( isset( $options['colorbox'])) :
 				
 				if ( $options['colorbox'] == 1 ) :
 					include ( dirname( __FILE__ ) . '/includes/colorbox/colorbox.php' );
 				
 				endif;
 			endif;
+			
+			/**
+			 * Call the Social Buttons if needed
+			 */
+			if ( isset( $options['social'] ) ) :
+				if ( $options['social'] == 1 ) :
+					add_filter( 'the_content', array( &$this, 'social_sharing' ) );
+				endif;
+			endif;			
 			
 		}
 		
@@ -272,15 +277,12 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 		 */
 		function output_gallery( $content ) {
 			global $post;
-			
-			if ( ( 'mojo-gallery-album' == get_post_type() ) && is_singular()  ) :
-			
-				
+						
 				/**
 				 * Add the gallery shortcode if needed
 				 */
 				$gallery = strpos( $content, '[gallery' );
-				if ( $gallery === false ) :
+				if ( ($gallery === false ) && ( 'mojo-gallery-album' == get_post_type() ) && is_singular() ) :
 				
 					$content .=  '[gallery]';
 					
@@ -291,8 +293,7 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 					return $content;
 				
 				endif;
-				
-			endif;
+			
 		}
 		
 		/**
@@ -321,7 +322,7 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 		 */
 		function social_sharing( $content ) {
 				$options = get_option( 'mojoGallery_options' );
-				if ( is_single() && ( 'mojo-gallery-album' == get_post_type() ) && ( $options['social'] == 1 ) ) : 
+				if ( is_single() && ( 'mojo-gallery-album' == get_post_type() ) ) : 
 					return $content . '
 						<div style="social-widget">
 							<div style="display:inline;">
@@ -354,123 +355,47 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 		}
 		
 		/**
-		 * custom_single_template function.
+		 * load_templates function.
 		 *
-		 * Set our own single template for our albums.
-		 * 
-		 * @access public
-		 * @param mixed $single_template
-		 * @return void
-		 * @since 0.1
-		 * @todo is this the best way? Should we just use filters?
-		 */
-		function custom_single_template( $single_template ) {
-			global $post;
-			
-			if ( $post->post_type == 'mojo-gallery-album' ) :
-				$single_template = dirname( __FILE__ ) . '/single-gallery.php';
-			endif;
-			
-			return $single_template;
-		}
-		
-		/**
-		 * single_output function.
-		 *
-		 * Controls output of the single pages. Not being called at the moment as can't get it to work!
+		 * First checks to see if the user has their own templates and creates them if not.
 		 * 
 		 * @access public
 		 * @return void
-		 * @since 0.1
+		 * @since 0.4
 		 */
-		function single_output($post) {
-			global $post;
-	    	if ( is_single() && ( 'mojo-gallery-album' == get_post_type() ) ) :
-		    	//Lets get some info about our parent post
-				$parent_title = get_the_title($post->post_parent);
-				
-				//If we have a parent post modify the link/title to include it
-				if ($post->post_parent ) : ?>
-				
-					<h1><a href="<?php echo get_post_type_archive_link( 'mojo-gallery-album' );?>">Gallery</a> &raquo; <a href="<?php echo get_permalink($post->post_parent);?>"><?php echo $parent_title;?></a> &raquo; <?php the_title();?></h1>			
-				
-				<?php else : ?>
+		function load_templates( $single_template ) {
+			$parent_theme = get_template_directory() . '/mojo-gallery/';
+			$child_theme = get_stylesheet_directory() . '/mojo-gallery/';
 			
-					<h1><a href="<?php echo get_post_type_archive_link( 'mojo-gallery-album' );?>">Gallery</a> &raquo; <?php the_title();?></h1>						
-				<?php endif;
+			/**
+			 * First we check the stylesheet path to check for child themes
+			 */
+			if ( is_dir( $child_theme) && ( file_exists( $child_theme . '/single-mojo_gallery_album.php' ) && file_exists( $child_theme . '/archive-mojo_gallery_album.php' ) ) ) :
 			
-				//If we have no content and we have children list them, need to check for the [gallery] shortcode somehow and need to account for parents with images and children!
-				if ( ( get_the_content() == '' ) ) :
-					
-					$args = array(
-						'post_type' => 'gallery',
-						'child_of' => $post->ID,
-						'parent' => $post->ID,
-					);
-					
-					$albums = get_pages($args);
-					
-					$counter = 1; //start our counter
-					$grids = 4; //images per row should be the same as archive-gallery.php
-					?>
-					
-					<div id="gridcontainer">
-					
-					<?php foreach ( $albums as $album ) {
-		
-						$permalink = get_permalink( $album->ID );
-						
-						if ( $thumb = get_the_post_thumbnail( $album->ID, 'gallery-thumbnail')  == null ) :
-							$thumb = '<img src="'. get_template_directory_uri() .'/images/default_thumb.jpg" />';
-						else :
-							$thumb = get_the_post_thumbnail( $album->ID, 'gallery-thumbnail');
-						endif;
-						
-						
-						//show left hand column
-						if ( $counter != $grids ) : ?>
-							<div class="griditemleft">
-								<div class="postimage">
-									<a href="<?php echo $permalink;?>"><?php echo $thumb;?></a>
-								</div>
-								<h2><a href="<?php echo $permalink;?>"><?php echo $album->post_title;?></a></h2>
-							</div>
-							
-						<?php
-						//show the right hand column
-						elseif ( $counter == $grids ) : ?>
-						
-							<div class="griditemright">
-								<div class="postimage">
-									<a href="<?php echo $permalink;?>"><?php echo $thumb;?></a>
-								</div>
-								<h2><a href="<?php echo $permalink;?>"><?php echo $album->post_title;?></a></h2>								
-							</div>
-							
-							<div class="clear"></div>
-						
-						<?php
-						$counter = 0;
-						
-						endif;
-		
-						$counter++;
-		
-					} ?>
+				die('Found CSS files');
+			/**
+			 * If the stylesheet path isn't valid we check the template path
+			 * this is to check if the parent theme has a template even if the child theme doesn't
+			 */
+			elseif ( is_dir( $parent_theme ) && ( file_exists( $parent_theme . '/single-mojo_gallery_album.php' ) && file_exists( $parent_theme . '/archive-mojo_gallery_album.php' ) ) ) :
+			
+				die('Found Theme files');
+			
+			/**
+			 * If we are sure the user doesn't have their own templates we load the plugin default
+			 */
+			else :
+				global $post;
 				
-					</div>
-				<?php
-				//Or just show the content
-				else :
-										
-					the_content('');
-		
+				if ( $post->post_type == 'mojo-gallery-album' ) :
+					$single_template = dirname( __FILE__ ) . '/templates/single-mojo_gallery_album.php';
 				endif;
 				
+				return $single_template;
+							
 			endif;
 		}
-		
-				
+						
 	} //end class
 
 endif; //end class if
