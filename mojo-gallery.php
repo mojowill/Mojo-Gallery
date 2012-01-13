@@ -3,7 +3,7 @@
 Plugin Name: The Mojo Gallery
 Plugin URI: http://www.mojowill.com/developer/mojo-gallery-plugin/
 Description: A small gallery plugin using the built in media uploader and gallery shortcodes. THIS IS A WORK IN PROGRESS!
-Version: 0.3
+Version: 0.4
 Author: theMojoWill
 Author URI: http://www.mojowill.com
 License: GPLv2 or later
@@ -44,7 +44,6 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 	 * mojoGallery class.
 	 */
 	class mojoGallery {
-								
 		
 		/**
 		 * __construct function.
@@ -66,8 +65,8 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 			add_action( 'wp_print_scripts', array( &$this, 'gplus' ) );
 			add_action( 'init', array( &$this, 'load_languages' ) );
 			
-			add_filter( 'single_template', array( &$this, 'load_templates' ) );
-
+			add_filter( 'single_template', array( &$this, 'load_single' ) );
+			add_filter( 'archive_template', array( &$this, 'load_archive' ) );
 			
 			add_filter( 'the_content', array( &$this, 'output_gallery' ) );
 						
@@ -355,7 +354,7 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 		}
 		
 		/**
-		 * load_templates function.
+		 * load_single function.
 		 *
 		 * First checks to see if the user has their own templates and creates them if not.
 		 * 
@@ -363,21 +362,21 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 		 * @return void
 		 * @since 0.4
 		 */
-		function load_templates( $single_template ) {
+		function load_single( $single_template ) {
 			$parent_theme = get_template_directory() . '/mojo-gallery/';
 			$child_theme = get_stylesheet_directory() . '/mojo-gallery/';
 			
 			/**
 			 * First we check the stylesheet path to check for child themes
 			 */
-			if ( is_dir( $child_theme) && ( file_exists( $child_theme . '/single-mojo_gallery_album.php' ) && file_exists( $child_theme . '/archive-mojo_gallery_album.php' ) ) ) :
+			if ( is_dir( $child_theme) && file_exists( $child_theme . '/single-mojo_gallery_album.php' ) ) :
 			
 				die('Found CSS files');
 			/**
 			 * If the stylesheet path isn't valid we check the template path
 			 * this is to check if the parent theme has a template even if the child theme doesn't
 			 */
-			elseif ( is_dir( $parent_theme ) && ( file_exists( $parent_theme . '/single-mojo_gallery_album.php' ) && file_exists( $parent_theme . '/archive-mojo_gallery_album.php' ) ) ) :
+			elseif ( is_dir( $parent_theme ) && file_exists( $parent_theme . '/single-mojo_gallery_album.php' ) ) :
 			
 				die('Found Theme files');
 			
@@ -395,7 +394,69 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 							
 			endif;
 		}
-						
+		
+		/**
+		 * load_archive function.
+		 *
+		 * First checks to see if the user has their own templates and creates them if not.
+		 * 
+		 * @access public
+		 * @return void
+		 * @since 0.4
+		 */
+		function load_archive( $archive_template ) {
+			$parent_theme = get_template_directory() . '/mojo-gallery/';
+			$child_theme = get_stylesheet_directory() . '/mojo-gallery/';
+			
+			/**
+			 * First we check the stylesheet path to check for child themes
+			 */
+			if ( is_dir( $child_theme) && file_exists( $child_theme . '/archive-mojo_gallery_album.php' ) ) :
+			
+				die('Found CSS files');
+			/**
+			 * If the stylesheet path isn't valid we check the template path
+			 * this is to check if the parent theme has a template even if the child theme doesn't
+			 */
+			elseif ( is_dir( $parent_theme ) && file_exists( $parent_theme . '/archive-mojo_gallery_album.php' ) ) :
+			
+				die('Found Theme files');
+			
+			/**
+			 * If we are sure the user doesn't have their own templates we load the plugin default
+			 */
+			else :
+				global $post;
+				
+				if ( $post->post_type == 'mojo-gallery-album' ) :
+					$archive_template = dirname( __FILE__ ) . '/templates/archive-mojo_gallery_album.php';
+				endif;
+				
+				return $archive_template;
+							
+			endif;
+		}
+		
+		function default_thumbnails() {
+
+  			//Set Thumb from current post thumbnail
+			if ( has_post_thumbnail() ) :
+				$this->thumb = get_the_post_thumbnail(get_the_ID(), 'gallery-thumbnail');
+				return $this->thumb;
+			//If no post thumbnail get our user set default
+			elseif ( ( isset( $options['placeholder'] ) &&  ( $options['placeholder'] !== '' ) ) ) :
+				$this->thumb = $options['placeholder'];
+				return $this->thumb;
+			
+			//If no user set default use the plugin default	
+			else :
+				$this->thumb = '<img src="'. plugins_url( '', __FILE__ ) . '/images/default.jpg" />';
+				return $this->thumb;
+			endif;
+			
+			return $this->thumb;
+		}
+		
 	} //end class
 
 endif; //end class if
@@ -443,6 +504,7 @@ if ( ! class_exists( 'mojoGalleryOptions' ) ) :
 								'social' => '1',
 								'chk_default_options_db' => '',
 								'theme' => 'theme1',
+								'columns' => '4',
 				);
 				
 				update_option('mojoGallery_options', $arr);
@@ -530,6 +592,12 @@ if ( ! class_exists( 'mojoGalleryOptions' ) ) :
 							<th scope="row"><?php echo _e( 'Image Settings', 'mojo-gallery' );?></th>
 							<td>
 								<label><input name="mojoGallery_options[placeholder]" type="text" value="<?php if (isset($options['placeholder'])) echo $options['placeholder'];?>" /><?php echo _e( 'Default Image Placeholder URL, (150px x 150px by default)', 'mojo-gallery' );?></label>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row"></th>
+							<td>
+								<label><input name="mojoGallery_options[columns]" type="text" size="5" value="<?php if ( isset( $options['columns'] ) ) echo $options['columns'];?>"/><?php echo _e( 'Number of columns to show in grid view', 'mojo-gallery' );?></label>
 							</td>
 						</tr>
 						<!-- Select Drop-Down Control -->
