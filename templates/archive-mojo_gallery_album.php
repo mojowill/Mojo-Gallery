@@ -19,10 +19,7 @@
 				<div id="gridcontainer">
 
             		<?php while (have_posts() ) : the_post();
-            			
-            			//Get Thumbnails
-						
-						
+            									
 						//show left hand column
 						if ( $counter != $grids ) : ?>
 							<div class="griditemleft">
