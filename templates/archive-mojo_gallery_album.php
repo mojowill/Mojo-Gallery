@@ -3,61 +3,57 @@
 			<div id="content3">
 				<?php 
 				
-				//Get Options
-				$options = get_option( 'mojoGallery_options' );
-				
 				$counter = 1; //start the counter
-				$grids = $options['columns']; //images per row shouldn't go above 4 really
 				
 				global $query_string;
 				
-				query_posts($query_string . '&ignore_sticky_posts=1&posts_per_page=12&post_parent=0');
+				query_posts($query_string . '&ignore_sticky_posts=1&posts_per_page=12&post_parent=0'); ?>
 				
-				if (have_posts()) : ?>
-				
-				<div class="fullcol">
-				
-				<h1><?php echo _e( 'Gallery', 'mojo-gallery' );?></h1>
-				
-				<div id="gridcontainer">
+				<h1><?php $mojoGallery->archive_title();?></h1>
 
-            		<?php while (have_posts() ) : the_post();
-            									
-						//show left hand column
-						if ( $counter != $grids ) : ?>
-							<div class="griditemleft">
-								<div class="postimage">
-									<a href="<?php the_permalink();?>"><?php echo $mojoGallery->default_thumbnails();
-;?></a>
+				<?php if (have_posts()) : ?>
+				
+					<div id="mojoGallery">
+		
+	            		<?php while (have_posts() ) : the_post();
+		            									
+							//show left hand column
+							if ( $counter != $mojoGallery->column_count() ) : ?>
+								<div class="griditemleft">
+									<div class="postimage">
+										<a href="<?php the_permalink();?>"><?php $mojoGallery->default_thumbnails();?></a>
+									</div>
+									<h2><a href="<?php the_permalink();?>"><?php echo get_the_title();?></a></h2>
 								</div>
-								<h2><a href="<?php the_permalink();?>"><?php echo get_the_title();?></a></h2>
-							</div>
+								
+							<?php
+							//show the right hand column
+							elseif ( $counter == $mojoGallery->column_count() ) : ?>
 							
-						<?php
-						//show the right hand column
-						elseif ( $counter == $grids ) : ?>
-						
-							<div class="griditemright">
-								<div class="postimage">
-									<a href="<?php the_permalink();?>"><?php echo $mojoGallery->default_thumbnails();?></a>
+								<div class="griditemright">
+									<div class="postimage">
+										<a href="<?php the_permalink();?>"><?php $mojoGallery->default_thumbnails();?></a>
+									</div>
+									<h2><a href="<?php the_permalink();?>"><?php echo get_the_title();?></a></h2>								
 								</div>
-								<h2><a href="<?php the_permalink();?>"><?php echo get_the_title();?></a></h2>								
-							</div>
+								
+								<div class="clear"></div>
 							
-							<div class="clear"></div>
+							<?php $counter = 0;
+							
+							endif;
+	
+						$counter++;
 						
-						<?php
-						$counter = 0;
-						
-						endif;
-
-					$counter++;
-					
-					endwhile; ?>
+						endwhile; ?>
 					</div>
-				</div>	                   
                 
-                <?php endif; ?>
+                <?php else : ?>
+                
+    				<p><?php echo _e( 'Sorry no albums found.', 'mojo-gallery' );?></p>
+                
+                
+              	<?php endif; ?>
                 			
 			</div>
 			

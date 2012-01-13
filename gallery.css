@@ -1,5 +1,5 @@
-#gridcontainer{margin: 20px 0; width: 100%; }
-#gridcontainer h2 a{color: #77787a; font-size: 13px;}
-#gridcontainer .griditemleft{float: left; width: 150px; margin: 0 20px 20px 0;}
-#gridcontainer .griditemright{float: left; width: 150px; }
-#gridcontainer .postimage{margin: 0 0 10px 0;}
+#mojoGallery{margin: 20px 0; width: 100%; }
+#mojoGallery h2 a{color: #77787a; font-size: 13px;}
+#mojoGallery .griditemleft{float: left; width: 150px; margin: 0 20px 20px 0;}
+#mojoGallery .griditemright{float: left; width: 150px; }
+#mojoGallery .postimage{margin: 0 0 10px 0;}

@@ -413,14 +413,14 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 			 */
 			if ( is_dir( $child_theme) && file_exists( $child_theme . '/single-mojo_gallery_album.php' ) ) :
 			
-				die('Found CSS files');
+				$single_template = $child_theme . '/single-mojo_gallery_album.php';
 			/**
 			 * If the stylesheet path isn't valid we check the template path
 			 * this is to check if the parent theme has a template even if the child theme doesn't
 			 */
 			elseif ( is_dir( $parent_theme ) && file_exists( $parent_theme . '/single-mojo_gallery_album.php' ) ) :
 			
-				die('Found Theme files');
+				$single_template = $parent_theme . '/single-mojo_gallery_album.php';
 			
 			/**
 			 * If we are sure the user doesn't have their own templates we load the plugin default
@@ -431,10 +431,11 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 				if ( $post->post_type == 'mojo-gallery-album' ) :
 					$single_template = dirname( __FILE__ ) . '/templates/single-mojo_gallery_album.php';
 				endif;
-				
-				return $single_template;
-							
+									
 			endif;
+			
+			return $single_template;
+
 		}
 		
 		/**
@@ -445,6 +446,7 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 		 * @access public
 		 * @return void
 		 * @since 0.4
+		 * @todo need to get these to load even if no post found.
 		 */
 		function load_archive( $archive_template ) {
 			$parent_theme = get_template_directory() . '/mojo-gallery/';
@@ -455,14 +457,14 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 			 */
 			if ( is_dir( $child_theme) && file_exists( $child_theme . '/archive-mojo_gallery_album.php' ) ) :
 			
-				die('Found CSS files');
+				$archive_template = $child_theme . '/archive-mojo_gallery_album.php';
 			/**
 			 * If the stylesheet path isn't valid we check the template path
 			 * this is to check if the parent theme has a template even if the child theme doesn't
 			 */
 			elseif ( is_dir( $parent_theme ) && file_exists( $parent_theme . '/archive-mojo_gallery_album.php' ) ) :
 			
-				die('Found Theme files');
+				$archive_template = $parent_theme . '/archive-mojo_gallery_album.php';
 			
 			/**
 			 * If we are sure the user doesn't have their own templates we load the plugin default
@@ -473,12 +475,21 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 				if ( $post->post_type == 'mojo-gallery-album' ) :
 					$archive_template = dirname( __FILE__ ) . '/templates/archive-mojo_gallery_album.php';
 				endif;
-				
-				return $archive_template;
-							
+											
 			endif;
+			
+			return $archive_template;
 		}
 		
+		/**
+		 * default_thumbnails function.
+		 *
+		 * Checks for a post thumb, if none checks for user default, if none uses plugin default.
+		 * 
+		 * @access public
+		 * @return void
+		 * @since 0.4
+		 */
 		function default_thumbnails() {
 
   			//Set Thumb from current post thumbnail
@@ -494,7 +505,65 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 				$thumb = '<img src="'. plugins_url( '', __FILE__ ) . '/images/default.jpg" />';
 			endif;
 			
-			return $thumb;
+			echo $thumb;
+		}
+		
+		/**
+		 * archive_title function.
+		 *
+		 * Variable archive title based on user settings
+		 * 
+		 * @access public
+		 * @return void
+		 * @since 0.4
+		 */
+		function archive_title() {
+			$options = get_option( 'mojoGallery_options' );
+			
+			if ( isset( $options['archive_title'] ) && ( $options['archive_title'] != '' ) ) :
+				$archive_title = $options['archive_title'];
+			else :
+				$archive_title = 'Gallery';
+			endif;
+			
+			echo $archive_title;
+		}
+		
+		/**
+		 * column_count function.
+		 *
+		 * Allows user to set number of columns to show in grid view.
+		 * 
+		 * @access public
+		 * @return void
+		 * @since 0.4
+		 */
+		function column_count() {
+			$options = get_option( 'mojoGallery_options' );
+			
+			if ( isset( $options['columns'] ) && ( $options['columns'] != '' ) ) :
+				$column_count = $options['columns'];
+			else:
+				$column_count = 4;
+			endif;
+			
+			return $column_count;
+		}
+		
+		/**
+		 * album_permalink function.
+		 *
+		 * echos our albums permalink for use on the child page list.
+		 * 
+		 * @access public
+		 * @return void
+		 * @since 0.4
+		 */
+		function album_permalink() {
+			global $album;
+			
+			$album_permalink = get_permalink( $album->ID );
+			echo $album_permalink;
 		}
 		
 	} //end class
@@ -547,6 +616,7 @@ if ( ! class_exists( 'mojoGalleryOptions' ) ) :
 								'chk_default_options_db' => '',
 								'theme' => 'theme1',
 								'columns' => '4',
+								'archive_title' => 'Gallery',
 				);
 				
 				update_option('mojoGallery_options', $arr);
@@ -631,15 +701,21 @@ if ( ! class_exists( 'mojoGalleryOptions' ) ) :
 
 						<!-- Text Area Control -->
 						<tr>
-							<th scope="row"><?php echo _e( 'Image Settings', 'mojo-gallery' );?></th>
+							<th scope="row"><?php echo _e( 'Archive Page Title', 'mojo-gallery' );?></th>
 							<td>
-								<label><input name="mojoGallery_options[placeholder]" type="text" value="<?php if (isset($options['placeholder'])) echo $options['placeholder'];?>" /><?php echo _e( 'Default Image Placeholder URL, (150px x 150px by default)', 'mojo-gallery' );?></label>
+								<label><input name="mojoGallery_options[archive_title]" type="text" value="<?php if (isset($options['archive_title'])) echo $options['archive_title'];?>"/><span style="color:#666666;margin-left:2px;"><?php echo _e( 'The page title for your archive/category listing page', 'mojo-gallery' );?></span></label>
 							</td>
 						</tr>
 						<tr>
-							<th scope="row"></th>
+							<th scope="row"><?php echo _e( 'Default Placeholder URL', 'mojo-gallery' );?></th>
 							<td>
-								<label><input name="mojoGallery_options[columns]" type="text" size="5" value="<?php if ( isset( $options['columns'] ) ) echo $options['columns'];?>"/><?php echo _e( 'Number of columns to show in grid view', 'mojo-gallery' );?></label>
+								<label><input name="mojoGallery_options[placeholder]" type="text" value="<?php if (isset($options['placeholder'])) echo $options['placeholder'];?>" /><span style="color:#666666;margin-left:2px;"><?php echo _e( 'Default Image Placeholder URL, (150px x 150px by default)', 'mojo-gallery' );?></span></label>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row"><?php echo _e( 'Number of columns to show', 'mojo-gallery' );?></th>
+							<td>
+								<label><input name="mojoGallery_options[columns]" type="text" size="5" value="<?php if ( isset( $options['columns'] ) ) echo $options['columns'];?>"/><span style="color:#666666;margin-left:2px;"><?php echo _e( 'Number of columns to show in grid view', 'mojo-gallery' );?></span></label>
 							</td>
 						</tr>
 						<!-- Select Drop-Down Control -->
@@ -684,8 +760,9 @@ if ( ! class_exists( 'mojoGalleryOptions' ) ) :
 		 * @since 0.1
 		 */
 		function validate_options( $input ) {
-			$input['placeholder'] = esc_url( $input['placeholder'] ); //Sanitise our placeholder URL
-			$input['columns'] = wp_filter_nohtml_kses( $input['columns']); //sanitise columns
+			$input['placeholder'] = esc_url( $input['placeholder'] );
+			$input['columns'] = wp_filter_nohtml_kses( $input['columns']);
+			$input['archive_title'] = wp_filter_nohtml_kses( $input['archive_title']);
 			return $input;
 		}
 				

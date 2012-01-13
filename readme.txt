@@ -6,7 +6,7 @@ Requires at least: 3.2
 Tested up to: 3.3.1
 Stable tag: trunk
 
-A small gallery plugin using the built in media uploader and gallery shortcodes. THIS IS A WORK IN PROGRESS!
+A small gallery plugin using the built in media uploader and gallery shortcodes.
 
 == Description ==
 
@@ -50,6 +50,8 @@ Check out the Developer Notes section for more info.
 
 = 0.4 =
 * Added front end templates and template checks
+* A number of big improvements to how front end is rendered
+* Allows user custom templates and variables set from options page
 
 = 0.3 =
 * Added Readme
