@@ -267,7 +267,7 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 		 * output_gallery function.
 		 *
 		 * Adds the Gallery Shortcode to the_content on album pages 
-		 * ONLY if they haven't already added the shortcode! 
+		 * ONLY if they haven't already added the shortcode! Need to be careful of parent listings. 
 		 * 
 		 * @access public
 		 * @return void
