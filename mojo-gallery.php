@@ -446,14 +446,13 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 		 * @access public
 		 * @return void
 		 * @since 0.4
-		 * @todo need to get these to load even if no post found.
 		 */
 		function load_archive( $archive_template ) {
 			$parent_theme = get_template_directory() . '/mojo-gallery/';
 			$child_theme = get_stylesheet_directory() . '/mojo-gallery/';
 
-			if ( is_post_type_archive() ) :
-				die('it works');
+			if ( is_post_type_archive( array('mojo-gallery-album') ) ) :
+
 				/**
 				 * First we check the stylesheet path to check for child themes
 				 */
@@ -478,7 +477,7 @@ if ( ! class_exists( 'mojoGallery' ) ) :
 				endif;
 			
 			endif;
-			
+
 			return $archive_template;
 		}
 		
