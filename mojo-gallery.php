@@ -3,7 +3,7 @@
 Plugin Name: The Mojo Gallery
 Plugin URI: http://www.mojowill.com/developer/mojo-gallery-plugin/
 Description: A small gallery plugin using the built in media uploader and gallery shortcodes. THIS IS A WORK IN PROGRESS!
-Version: 0.4
+Version: 0.4.1
 Author: theMojoWill
 Author URI: http://www.mojowill.com
 License: GPLv2 or later
