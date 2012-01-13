@@ -48,6 +48,9 @@ Check out the Developer Notes section for more info.
 
 == Changelog ==
 
+= 0.4.1 =
+* Minor change to sort out file and folder structure
+
 = 0.4 =
 * Added front end templates and template checks
 * A number of big improvements to how front end is rendered

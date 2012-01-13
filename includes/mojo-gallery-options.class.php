@@ -5,7 +5,7 @@ if ( ! class_exists( 'mojoGalleryOptions' ) ) :
 	 * mojoGalleryOptions class.
 	 *
 	 * @todo Add options for Gallery output.
-	 * @version 0.4
+	 * @version 0.4.1
 	 * @since 0.1
 	 */
 	class mojoGalleryOptions {

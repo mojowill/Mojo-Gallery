@@ -6,7 +6,7 @@
  *
  * @package MojoGallery
  * @author Will Wilson <will@mojowill.com>
- * @version 0.4
+ * @version 0.4.1
  * @since 0.1
  * @todo Modify Taxonomy permalinks to include CPT
  * @todo change use of global $mojo variables to use static property
