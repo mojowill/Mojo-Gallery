@@ -21,14 +21,14 @@
             		<?php while (have_posts() ) : the_post();
             			
             			//Get Thumbnails
-						$mojoGallery->default_thumbnails();
 						
 						
 						//show left hand column
 						if ( $counter != $grids ) : ?>
 							<div class="griditemleft">
 								<div class="postimage">
-									<a href="<?php the_permalink();?>"><?php echo $thumb;?></a>
+									<a href="<?php the_permalink();?>"><?php echo $mojoGallery->default_thumbnails();
+;?></a>
 								</div>
 								<h2><a href="<?php the_permalink();?>"><?php echo get_the_title();?></a></h2>
 							</div>
@@ -39,7 +39,7 @@
 						
 							<div class="griditemright">
 								<div class="postimage">
-									<a href="<?php the_permalink();?>"><?php echo $thumb;?></a>
+									<a href="<?php the_permalink();?>"><?php echo $mojoGallery->default_thumbnails();?></a>
 								</div>
 								<h2><a href="<?php the_permalink();?>"><?php echo get_the_title();?></a></h2>								
 							</div>

@@ -41,14 +41,12 @@
 							<?php foreach ( $albums as $album ) {
 
 								$permalink = get_permalink( $album->ID );
-								
-								mojoGallery::default_thumbnails();								
-								
+																
 								//show left hand column
 								if ( $counter != $grids ) : ?>
 									<div class="griditemleft">
 										<div class="postimage">
-											<a href="<?php echo $permalink;?>"><?php echo $thumb;?></a>
+											<a href="<?php echo $permalink;?>"><?php echo $mojoGallery->default_thumbnails();?></a>
 										</div>
 										<h2><a href="<?php echo $permalink;?>"><?php echo $album->post_title;?></a></h2>
 									</div>
@@ -59,7 +57,7 @@
 								
 									<div class="griditemright">
 										<div class="postimage">
-											<a href="<?php echo $permalink;?>"><?php echo $thumb;?></a>
+											<a href="<?php echo $permalink;?>"><?php echo $mojoGallery->default_thumbnails();?></a>
 										</div>
 										<h2><a href="<?php echo $permalink;?>"><?php echo $album->post_title;?></a></h2>								
 									</div>
